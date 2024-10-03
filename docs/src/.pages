@@ -1,4 +1,5 @@
 nav:
-  - Home: index.md
+  - index.md
   - install.md
   - contributing.md
+  - usage.md
