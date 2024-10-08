@@ -38,10 +38,7 @@ dev-dependencies = [
 ]
 
 [tool.uv.sources]
-hope-flex-fields = { path = "../hope-flex-fields" }
-
-
-
+hope-flex-fields = { git = "https://github.com/unicef/hope-flex-fields.git", branch = "release/0.1rc" }
 
 [tool.isort]
 profile = "black"
