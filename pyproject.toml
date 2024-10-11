@@ -37,11 +37,6 @@ dev-dependencies = [
     "mypy>=1.11.2",
 ]
 
-[tool.uv.sources]
-hope-flex-fields = { path = "../hope-flex-fields" }
-
-
-
 
 [tool.isort]
 profile = "black"
