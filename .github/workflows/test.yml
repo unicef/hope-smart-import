@@ -42,19 +42,6 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     name: Test py${{ matrix.python-version }}/dj${{matrix.django-version}}
-#    services:
-#      redis:
-#        image: redis
-#        ports:
-#          - 16379:6379
-#      postgres:
-#        image: postgres
-#        ports:
-#          - 15432:5432
-#        env:
-#          POSTGRES_USER: postgres
-#          POSTGRES_PASSWORD: postgres
-#          POSTGRES_DB: django_celery_boost
     defaults:
       run:
         shell: bash
@@ -66,12 +53,6 @@ jobs:
       fail-fast: true
     needs: [ changes ]
     if: needs.changes.outputs.run_tests || needs.changes.outputs.lint
-#    env:
-#      CELERY_BROKER_URL: redis://localhost:16379/0
-#      DB_HOST: "localhost"
-#      DB_PORT: 15432
-#      DB_USER: "postgres"
-#      DB_PASSWORD: "postgres"
     steps:
       - name: Checkout code
         uses: actions/checkout@v4.1.7
