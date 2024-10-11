@@ -1,7 +1,6 @@
 # mypy: disable-error-code="no-untyped-def"
-import itertools
 from pathlib import Path
-from typing import Any, Generator, Iterable
+from typing import Any, Iterable
 
 import pytest
 from demo.factories import FieldsetFactory, FlexFieldFactory
