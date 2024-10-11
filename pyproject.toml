@@ -6,7 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "django-admin-extra-buttons>=1.5.8",
-    "hope-flex-fields>=0.1.0",
+    "hope-flex-fields>=0.2",
     "openpyxl>=3.1.5",
 ]
 
@@ -36,11 +36,6 @@ dev-dependencies = [
     "django>=4,<5",
     "mypy>=1.11.2",
 ]
-
-[tool.uv.sources]
-hope-flex-fields = { path = "../hope-flex-fields" }
-
-
 
 
 [tool.isort]

@@ -42,19 +42,6 @@ jobs:
   ci:
     runs-on: ubuntu-latest
     name: Test py${{ matrix.python-version }}/dj${{matrix.django-version}}
-#    services:
-#      redis:
-#        image: redis
-#        ports:
-#          - 16379:6379
-#      postgres:
-#        image: postgres
-#        ports:
-#          - 15432:5432
-#        env:
-#          POSTGRES_USER: postgres
-#          POSTGRES_PASSWORD: postgres
-#          POSTGRES_DB: django_celery_boost
     defaults:
       run:
         shell: bash
@@ -66,12 +53,6 @@ jobs:
       fail-fast: true
     needs: [ changes ]
     if: needs.changes.outputs.run_tests || needs.changes.outputs.lint
-#    env:
-#      CELERY_BROKER_URL: redis://localhost:16379/0
-#      DB_HOST: "localhost"
-#      DB_PORT: 15432
-#      DB_USER: "postgres"
-#      DB_PASSWORD: "postgres"
     steps:
       - name: Checkout code
         uses: actions/checkout@v4.1.7
@@ -90,17 +71,16 @@ jobs:
           key: ${{ matrix.python-version }}-${{matrix.django-version}}-${{ hashFiles('pyproject.toml') }}-venv
 
       - uses: yezz123/setup-uv@v4
-        with:
-          python:  ${{ matrix.python-version }}
 
       - name: Test
 #        if: needs.changes.outputs.run_tests
         run: |
-          uv add "django==${{ matrix.django-version }}.*"
-          uv run --cache-dir .cache-uv/ \
-              python -m pytest tests/ \
-                --junit-xml junit-${{ matrix.python-version }}-${{matrix.django-version}}.xml \
-                --cov --cov-report xml
+          python3 -m venv .venv
+          uv export -q --no-hashes  -o requirements.txt
+          .venv/bin/pip install -r requirements.txt
+          .venv/bin/pip install "django>=${{matrix.django-version}}"
+          .venv/bin/pytest tests --create-db --cov --junit-xml junit-${{ matrix.python-version }}-${{matrix.django-version}}.xml
+
       - name: Cache venv
         if: steps.cache-venv-restore.outputs.cache-hit != 'true'
         id: cache-venv-save
