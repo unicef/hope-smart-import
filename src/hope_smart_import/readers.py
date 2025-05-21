@@ -16,7 +16,8 @@ def identity(x: Any) -> Any:
     return x
 
 
-def _read_worksheet(sheet: "Worksheet", start_at: int, headers: bool, value_mapper: Callable[[Any], Any] = identity) -> Iterable[dict[str, Any]]:
+def _read_worksheet(sheet: "Worksheet", start_at: int, headers: bool,
+                    value_mapper: Callable[[Any], Any] = identity) -> Iterable[dict[str, Any]]:
     rows = sheet.rows
 
     field_names = None
@@ -34,16 +35,16 @@ def _read_worksheet(sheet: "Worksheet", start_at: int, headers: bool, value_mapp
         yield dict(zip(field_names, (value_mapper(cell.value) for cell in row)))
 
 
-def open_xls(filepath: str, *, sheet_index: int = 0, start_at: int = 0, headers: bool = True, value_mapper: "ValueMapper" = identity) -> "SheetResult":
+def open_xls(filepath: str, *, sheet_index: int = 0, start_at: int = 0, headers: bool = True,
+             value_mapper: "ValueMapper" = identity) -> "SheetResult":
     wb: "Workbook" = openpyxl.load_workbook(filepath)
     sh: "Worksheet" = wb.worksheets[sheet_index]
     for i in _read_worksheet(sh, start_at=start_at, headers=headers, value_mapper=value_mapper):
         yield i
 
 
-def open_xls_multi(
-    filepath: str, sheets: list[int] = (0,), start_at: list[int] | int = 0, headers: list[bool] | bool = True, value_mapper: "ValueMapper" = identity
-) -> "MultiSheetResult":
+def open_xls_multi(filepath: str, sheets: list[int] = (0,), start_at: list[int] | int = 0,
+                   headers: list[bool] | bool = True, value_mapper: "ValueMapper" = identity) -> "MultiSheetResult":
     wb: "Workbook" = openpyxl.load_workbook(filepath)
     for si in sheets:
         sh: "Worksheet" = wb.worksheets[si]
@@ -52,7 +53,8 @@ def open_xls_multi(
         yield si, _read_worksheet(sh, start_at=start_at, headers=headers, value_mapper=value_mapper)
 
 
-def open_csv(filepath: str, *, start_at: int = 0, headers: bool = False, value_mapper: "ValueMapper" = identity) -> "SheetResult":
+def open_csv(filepath: str, *, start_at: int = 0, headers: bool = False,
+             value_mapper: "ValueMapper" = identity) -> "SheetResult":
     with open(filepath) as f:
         if headers:
             reader = csv.DictReader(f)
