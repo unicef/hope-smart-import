@@ -71,11 +71,11 @@ def ind_validator(db: Any) -> Fieldset:
     FlexFieldFactory(
         name="gender_i_c",
         fieldset=fs,
-        field=FieldDefinitionFactory(field_type=forms.ChoiceField),
+        definition=FieldDefinitionFactory(field_type=forms.ChoiceField),
         attrs={"choices": [["FEMALE", "FEMALE"], ["MALE", "MALE"]]},
     )
 
-    FlexFieldFactory(name="birth_date_i_c", fieldset=fs, field=FieldDefinitionFactory(field_type=forms.DateField))
+    FlexFieldFactory(name="birth_date_i_c", fieldset=fs, definition=FieldDefinitionFactory(field_type=forms.DateField))
     FlexFieldFactory(name="estimated_birth_date_i_c", fieldset=fs)
     FlexFieldFactory(name="national_id_no_i_c", fieldset=fs)
     FlexFieldFactory(name="national_id_photo_i_c", fieldset=fs)
@@ -87,7 +87,7 @@ def ind_validator(db: Any) -> Fieldset:
     FlexFieldFactory(
         name="disability_i_c",
         fieldset=fs,
-        field=FieldDefinitionFactory(field_type=forms.ChoiceField),
+        definition=FieldDefinitionFactory(field_type=forms.ChoiceField),
         attrs={"choices": [["not disabled", "not disabled"], ["disabled", "disabled"]]},
     )
     return fs

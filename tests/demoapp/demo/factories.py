@@ -30,7 +30,7 @@ class FieldDefinitionFactory(DjangoModelFactory):
 class FlexFieldFactory(DjangoModelFactory):
     name = factory.Sequence(lambda n: f"FlexField {n}")
     fieldset = factory.SubFactory(Fieldset)
-    field = factory.SubFactory(FieldDefinitionFactory)
+    definition = factory.SubFactory(FieldDefinitionFactory)
 
     class Meta:
         model = FlexField
