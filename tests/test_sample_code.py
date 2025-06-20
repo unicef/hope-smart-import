@@ -22,10 +22,10 @@ def test_sample_code(db, xls_path):
     charfield = FieldDefinition.objects.get(field_type=forms.CharField)
     choicefield = FieldDefinition.objects.get(field_type=forms.ChoiceField)
 
-    FlexField.objects.get_or_create(name="name", fieldset=fs, field=charfield)
-    FlexField.objects.get_or_create(name="last_name", fieldset=fs, field=charfield)
+    FlexField.objects.get_or_create(name="name", fieldset=fs, definition=charfield)
+    FlexField.objects.get_or_create(name="last_name", fieldset=fs, definition=charfield)
     FlexField.objects.get_or_create(
-        name="gender", fieldset=fs, field=choicefield, attrs={"choices": [["M", "M"], ["F", "F"]]}
+        name="gender", fieldset=fs, definition=choicefield, attrs={"choices": [["M", "M"], ["F", "F"]]}
     )
 
     errors = validate_single(open_xls(xls_path), fs, fail_if_alien=True)
