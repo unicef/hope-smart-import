@@ -66,7 +66,7 @@ def open_xls(
 
 
 @overload
-def open_xls_multi(filepath: str, *, sheet_indices: list[int] = ..., start_at_row: list[int] | int = ...,
+def open_xls_multi(filepath: str, sheet_indices: list[int] = ..., *, start_at_row: list[int] | int = ...,
                    have_header: list[bool] | bool = ..., value_mapper: "ValueMapper" = ...) -> "MultiSheetResult": ...
 
 
