@@ -40,11 +40,13 @@ def _read_worksheet(
 
 
 @overload
-def open_xls(filepath: str, *, sheet_index: int = ..., start_at_row: int = ..., has_header: bool = ..., value_mapper: "ValueMapper" = ...) -> "SheetResult": ...
+def open_xls(filepath: str, *, sheet_index: int = ..., start_at_row: int = ..., has_header: bool = ...,
+             value_mapper: "ValueMapper" = ...) -> "SheetResult": ...
 
 
 @overload
-def open_xls(filepath: str, *, sheet_name: str, start_at_row: int = ..., has_header: bool = ..., value_mapper: "ValueMapper" = ...) -> "SheetResult": ...
+def open_xls(filepath: str, *, sheet_name: str, start_at_row: int = ..., has_header: bool = ...,
+             value_mapper: "ValueMapper" = ...) -> "SheetResult": ...
 
 
 def open_xls(
