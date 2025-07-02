@@ -39,28 +39,22 @@ def _read_worksheet(
         yield dict(zip(field_names, (value_mapper(cell.value) for cell in row), strict=True))
 
 
-@overload
-def open_xls(filepath: str, *, sheet_index: int = ..., start_at_row: int = ..., has_header: bool = ...,
-             value_mapper: "ValueMapper" = ...) -> "SheetResult": ...
-
-
-@overload
-def open_xls(filepath: str, *, sheet_name: str, start_at_row: int = ..., has_header: bool = ...,
-             value_mapper: "ValueMapper" = ...) -> "SheetResult": ...
-
-
 def open_xls(
     filepath: str,
     *,
-    sheet_index: int = 0,
-    sheet_name: str | None = None,
+    sheet_index_or_name: int | str = 0,
     start_at_row: int = 0,
     has_header: bool = True,
     value_mapper: "ValueMapper" = identity,
 ) -> "SheetResult":
     wb: "Workbook" = openpyxl.load_workbook(filepath)
-    if sheet_name is not None:
-        sheet_index = wb.sheetnames.index(sheet_name)
+    match sheet_index_or_name:
+        case int():
+            sheet_index = sheet_index_or_name
+        case str():
+            sheet_index = wb.sheetnames.index(sheet_index_or_name)
+        case _:
+            raise ValueError("sheet_index_or_name must be a str or int")
     sh: "Worksheet" = wb.worksheets[sheet_index]
     yield from _read_worksheet(sh, start_at_row=start_at_row, has_header=has_header, value_mapper=value_mapper)
 
@@ -89,10 +83,10 @@ def open_xls_multi(
     for si in sheet_indices:
         sh: "Worksheet" = wb.worksheets[si]
         start_at_row = start_at_row if isinstance(start_at_row, int) else start_at_row[si]
-        have_header = have_header if isinstance(have_header, bool) else have_header[si]
+        has_header = have_header if isinstance(have_header, bool) else have_header[si]
         yield (
             si,
-            _read_worksheet(sh, start_at_row=start_at_row, has_header=have_header, value_mapper=value_mapper),
+            _read_worksheet(sh, start_at_row=start_at_row, has_header=has_header, value_mapper=value_mapper),
         )
 
 

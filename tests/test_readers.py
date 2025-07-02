@@ -66,20 +66,20 @@ def test_read_xls_value_mapper(xls: str, mapper: "ValueMapper", validator: Calla
 
 @pytest.mark.parametrize("sheet_to_read_args", [
     {},
-    {"sheet_index": 0},
-    {"sheet_name": "f1"}])
+    {"sheet_index_or_name": 0},
+    {"sheet_index_or_name": "f1"}])
 def test_read_xls_sheet_to_read_args(xls: str, sheet_to_read_args: dict[str, int] | dict[str, str]) -> None:
     assert list(open_xls(xls, **sheet_to_read_args)) == XLS_DATA[0]
 
 
 def test_read_xls_invalid_sheet_index(xls: str) -> None:
     with pytest.raises(IndexError):
-        list(open_xls(xls, sheet_index=42))
+        list(open_xls(xls, sheet_index_or_name=42))
 
 
 def test_read_xls_invalid_sheet_name(xls: str) -> None:
     with pytest.raises(ValueError):
-        list(open_xls(xls, sheet_name="foo"))
+        list(open_xls(xls, sheet_index_or_name="foo"))
 
 
 @pytest.mark.parametrize("start_at", [0, 1])
