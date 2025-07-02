@@ -82,6 +82,11 @@ def test_read_xls_invalid_sheet_name(xls: str) -> None:
         list(open_xls(xls, sheet_index_or_name="foo"))
 
 
+def test_read_xls_invalid_sheet_arg_type(xls: str) -> None:
+    with pytest.raises(ValueError):
+        list(open_xls(xls, sheet_index_or_name=object()))
+
+
 @pytest.mark.parametrize("start_at", [0, 1])
 def test_read_multi_xls_headers(xls: str, start_at: int) -> None:
     ret = []
