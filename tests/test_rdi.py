@@ -14,22 +14,22 @@ if TYPE_CHECKING:
     from hope_smart_import.types import MultiSheetResult, SheetResult
 
 
-@pytest.fixture()
+@pytest.fixture
 def xls_rdi_simple() -> "SheetResult":
     return open_xls(str((Path(__file__).parent / "data" / "rdi1.xlsx").absolute()))
 
 
-@pytest.fixture()
+@pytest.fixture
 def xls_rdi() -> "MultiSheetResult":
     return open_xls_multi(str((Path(__file__).parent / "data" / "rdi1.xlsx").absolute()), [0, 1])
 
 
-@pytest.fixture()
+@pytest.fixture
 def xls_missing_master() -> "MultiSheetResult":
     return open_xls_multi(str((Path(__file__).parent / "data" / "missing_master.xlsx").absolute()), [0, 1])
 
 
-@pytest.fixture()
+@pytest.fixture
 def hh_validator(db: Any) -> Fieldset:
     fs = FieldsetFactory(name="household")
     FlexFieldFactory(name="household_id", fieldset=fs)
@@ -50,7 +50,7 @@ def hh_validator(db: Any) -> Fieldset:
     return fs
 
 
-@pytest.fixture()
+@pytest.fixture
 def simple_validator(db: Any) -> Fieldset:
     fs = FieldsetFactory()
     FlexFieldFactory(name="name", fieldset=fs)
@@ -58,7 +58,7 @@ def simple_validator(db: Any) -> Fieldset:
     return fs
 
 
-@pytest.fixture()
+@pytest.fixture
 def ind_validator(db: Any) -> Fieldset:
     fs = FieldsetFactory(name="individual")
     FlexFieldFactory(name="household_id", fieldset=fs)
@@ -75,7 +75,11 @@ def ind_validator(db: Any) -> Fieldset:
         attrs={"choices": [["FEMALE", "FEMALE"], ["MALE", "MALE"]]},
     )
 
-    FlexFieldFactory(name="birth_date_i_c", fieldset=fs, definition=FieldDefinitionFactory(field_type=forms.DateField))
+    FlexFieldFactory(
+        name="birth_date_i_c",
+        fieldset=fs,
+        definition=FieldDefinitionFactory(field_type=forms.DateField),
+    )
     FlexFieldFactory(name="estimated_birth_date_i_c", fieldset=fs)
     FlexFieldFactory(name="national_id_no_i_c", fieldset=fs)
     FlexFieldFactory(name="national_id_photo_i_c", fieldset=fs)
@@ -108,25 +112,22 @@ def test_validate_multi(xls_rdi: "MultiSheetResult", hh_validator: Fieldset, ind
 
 
 def test_validate_master_detail(xls_rdi: "MultiSheetResult", hh_validator: Fieldset, ind_validator: Fieldset) -> None:
-
     hh_validator.set_primary_key_col("household_id")
     ind_validator.set_master(hh_validator, "household_id")
 
     errors = validate_xls_multi(xls_rdi, [hh_validator, ind_validator], fail_if_alien=True)
     assert errors == {"1:household": {}, "2:individual": {}}
 
-    # assert errors['individual'] == {1: {'-': ["'missing' not found in master"]}}
-    # assert errors['household'] == {}
-
 
 def test_validate_missing_master(
-    xls_missing_master: "MultiSheetResult", hh_validator: Fieldset, ind_validator: Fieldset
+    xls_missing_master: "MultiSheetResult",
+    hh_validator: Fieldset,
+    ind_validator: Fieldset,
 ) -> None:
     hh_validator.set_primary_key_col("household_id")
     ind_validator.set_master(hh_validator, "household_id")
 
     errors = validate_xls_multi(xls_missing_master, [hh_validator, ind_validator], fail_if_alien=True)
 
-    print(errors)
     assert errors["2:individual"] == {2: {"-": ["'missing' not found in master"]}}
     assert errors["1:household"] == {}

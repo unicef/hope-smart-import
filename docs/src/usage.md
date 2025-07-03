@@ -13,13 +13,13 @@ Let imagine a simple `test.xlsx` file with this structure
 | Mary | Error     | X      |
 
 1. Let start creating validation rules (here in the code, you can use the admin interface otherwise)
-    
-    
+
+
         fs, __ = Fieldset.objects.get_or_create(name="test.xlsx")
-    
+
         charfield = FieldDefinition.objects.get(field_type=forms.CharField)
         choicefield = FieldDefinition.objects.get(field_type=forms.ChoiceField)
-    
+
         FlexField.objects.get_or_create(name="name", fieldset=fs, field=charfield)
         FlexField.objects.get_or_create(name="last_name", fieldset=fs, field=charfield)
         FlexField.objects.get_or_create(name="gender", fieldset=fs, field=choicefield,

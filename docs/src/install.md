@@ -10,7 +10,7 @@ title: Install
 ## Setup
 
 In your `settings.py`:
- 
+
     INSTALLED_APPS = [
         ...
         "hope_flex_fields",

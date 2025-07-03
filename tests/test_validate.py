@@ -10,17 +10,17 @@ from hope_smart_import.readers import open_xls, open_xls_multi
 from hope_smart_import.shortcuts import validate_single, validate_xls_multi
 
 
-@pytest.fixture()
+@pytest.fixture
 def xls_simple() -> Iterable:
     return open_xls(str((Path(__file__).parent / "data" / "r1.xlsx").absolute()))
 
 
-@pytest.fixture()
+@pytest.fixture
 def xls_multi() -> Iterable:
     return open_xls_multi(str((Path(__file__).parent / "data" / "r1.xlsx").absolute()), [0, 1])
 
 
-@pytest.fixture()
+@pytest.fixture
 def simple_validator(db: Any) -> Fieldset:
     fs = FieldsetFactory(name="Simple Validator")
     FlexFieldFactory(name="name", fieldset=fs)
@@ -34,7 +34,10 @@ def test_validate_simple(xls_simple: Iterable, simple_validator: Fieldset):
     assert not errors
 
     errors = validate_single(g1, simple_validator, fail_if_alien=True)
-    assert errors == {1: {"-": ["Alien values found {'gender'}"]}, 2: {"-": ["Alien values found {'gender'}"]}}
+    assert errors == {
+        1: {"-": ["Alien values found {'gender'}"]},
+        2: {"-": ["Alien values found {'gender'}"]},
+    }
 
 
 def test_validate_xls_multi(xls_multi: Iterable, simple_validator) -> None:
