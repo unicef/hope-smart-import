@@ -1,4 +1,5 @@
-from typing import TYPE_CHECKING, Any, Generator
+from typing import TYPE_CHECKING, Any
+from collections.abc import Generator
 
 from hope_flex_fields.models import DataChecker, Fieldset
 from hope_flex_fields.models.base import ValidatorMixin
@@ -13,7 +14,7 @@ def validate_single(
     *,
     include_success: bool = False,
     fail_if_alien: bool = False,
-) -> Generator[dict[str, Any], None, None]:
+) -> Generator[dict[str, Any]]:
     return checker.validate(g, include_success=include_success, fail_if_alien=fail_if_alien)
 
 
@@ -26,7 +27,9 @@ def validate_xls_multi(
     errors = {}
     for sheet_index, sheet_generator in g:
         checker = checkers[sheet_index]
-        errors[f"{sheet_index+1}:{checker.name}"] = checker.validate(
-            sheet_generator, include_success=include_success, fail_if_alien=fail_if_alien
+        errors[f"{sheet_index + 1}:{checker.name}"] = checker.validate(
+            sheet_generator,
+            include_success=include_success,
+            fail_if_alien=fail_if_alien,
         )
     return errors
