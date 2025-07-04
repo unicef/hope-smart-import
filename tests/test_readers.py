@@ -85,7 +85,7 @@ def test_read_xls_invalid_sheet_arg_type(xls: str) -> None:
 @pytest.mark.parametrize("start_at", [0, 1])
 def test_read_multi_xls_headers(xls: str, start_at: int) -> None:
     ret = []
-    for e, sh in open_xls_multi(xls, indices_or_names=[0, 1], start_at_row=start_at, have_header=True):
+    for e, sh in open_xls_multi(xls, indices_or_names=[0, 1], start_at_row=start_at, has_header=True):
         ret.extend([(e, row) for row in sh])
     if start_at == 0:
         # Sheet 0 - Row 0
@@ -105,7 +105,7 @@ def test_read_multi_xls_headers(xls: str, start_at: int) -> None:
 
 @pytest.mark.parametrize(("mapper", "validator"), [(str.upper, str.isupper), (str.lower, str.islower)])
 def test_read_multi_xls_value_mapper(xls: str, mapper: "ValueMapper", validator: Callable[[Any], bool]) -> None:
-    for _, sheet in open_xls_multi(xls, indices_or_names=[0, 1], have_header=True, value_mapper=mapper):
+    for _, sheet in open_xls_multi(xls, indices_or_names=[0, 1], has_header=True, value_mapper=mapper):
         for row in sheet:
             assert all(map(validator, row.values()))
 

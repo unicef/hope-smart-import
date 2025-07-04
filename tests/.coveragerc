@@ -33,7 +33,6 @@ exclude_lines =
     self.halt\(.*
     @abc.abstractmethod
     @abstractmethod
-    @overload
 
 
 fail_under=95

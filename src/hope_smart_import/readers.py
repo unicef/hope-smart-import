@@ -74,7 +74,7 @@ def open_xls_multi(
     filepath: str,
     indices_or_names: list[int | str] = (0,),
     start_at_row: list[int] | int = 0,
-    have_header: list[bool] | bool = True,
+    has_header: list[bool] | bool = True,
     value_mapper: "ValueMapper" = identity,
 ) -> "MultiSheetResult":
     wb: "Workbook" = openpyxl.load_workbook(filepath)
@@ -90,7 +90,7 @@ def open_xls_multi(
         except IndexError:
             raise SheetNotError(si)
         start_at_row = start_at_row if isinstance(start_at_row, int) else start_at_row[si]
-        has_header = have_header if isinstance(have_header, bool) else have_header[si]
+        has_header = has_header if isinstance(has_header, bool) else has_header[si]
         yield (
             si,
             _read_worksheet(sh, start_at_row=start_at_row, has_header=has_header, value_mapper=value_mapper),
