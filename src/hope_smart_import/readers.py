@@ -1,7 +1,7 @@
 import csv
 from collections.abc import Callable
 from itertools import islice
-from typing import TYPE_CHECKING, Any, Iterable, overload
+from typing import TYPE_CHECKING, Any, Iterable
 
 import openpyxl
 
@@ -10,6 +10,11 @@ if TYPE_CHECKING:
     from openpyxl.worksheet.worksheet import Worksheet
 
     from .types import MultiSheetResult, SheetResult, ValueMapper
+
+
+class SheetNotError(Exception):
+    def __init__(self, index_or_name: int | str) -> None:
+        super().__init__(index_or_name)
 
 
 def identity(x: Any) -> Any:
@@ -42,36 +47,48 @@ def _read_worksheet(
 def open_xls(
     filepath: str,
     *,
-    sheet_index_or_name: int | str = 0,
+    index_or_name: int | str = 0,
     start_at_row: int = 0,
     has_header: bool = True,
     value_mapper: "ValueMapper" = identity,
 ) -> "SheetResult":
     wb: "Workbook" = openpyxl.load_workbook(filepath)
-    match sheet_index_or_name:
+    match index_or_name:
         case int():
-            sheet_index = sheet_index_or_name
+            sheet_index = index_or_name
         case str():
-            sheet_index = wb.sheetnames.index(sheet_index_or_name)
+            try:
+                sheet_index = wb.sheetnames.index(index_or_name)
+            except ValueError:
+                raise SheetNotError(index_or_name)
         case _:
-            raise ValueError("sheet_index_or_name must be a str or int")
-    sh: "Worksheet" = wb.worksheets[sheet_index]
+            raise SheetNotError(index_or_name)
+    try:
+        sh: "Worksheet" = wb.worksheets[sheet_index]
+    except IndexError:
+        raise SheetNotError(sheet_index)
     yield from _read_worksheet(sh, start_at_row=start_at_row, has_header=has_header, value_mapper=value_mapper)
 
 
 def open_xls_multi(
     filepath: str,
-    sheet_indices: list[int] = (0,),
-    sheet_names: list[str] | None = None,
+    indices_or_names: list[int | str] = (0,),
     start_at_row: list[int] | int = 0,
     have_header: list[bool] | bool = True,
     value_mapper: "ValueMapper" = identity,
 ) -> "MultiSheetResult":
     wb: "Workbook" = openpyxl.load_workbook(filepath)
-    if sheet_names is not None:
-        sheet_indices = [wb.sheetnames.index(sheet_name) for sheet_name in sheet_names]
-    for si in sheet_indices:
-        sh: "Worksheet" = wb.worksheets[si]
+    indices = []
+    for i in indices_or_names:
+        try:
+            indices.append(i if isinstance(i, int) else wb.sheetnames.index(i))
+        except ValueError:
+            raise SheetNotError(i)
+    for si in indices:
+        try:
+            sh: "Worksheet" = wb.worksheets[si]
+        except IndexError:
+            raise SheetNotError(si)
         start_at_row = start_at_row if isinstance(start_at_row, int) else start_at_row[si]
         has_header = have_header if isinstance(have_header, bool) else have_header[si]
         yield (

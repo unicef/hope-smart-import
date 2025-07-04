@@ -4,17 +4,15 @@ from typing import Any, TYPE_CHECKING
 
 import pytest
 
-from hope_smart_import.readers import open_csv, open_xls, open_xls_multi
+from hope_smart_import.readers import open_csv, open_xls, open_xls_multi, SheetNotError
 
 if TYPE_CHECKING:
     from hope_smart_import.types import ValueMapper
 
 
 XLS_DATA = [
-    [{"gender": "M", "last_name": "Doe", "name": "John"},
-     {"gender": "F", "last_name": "Doe", "name": "Jane"}],
-    [{"gender": "m", "last_name": "Doe1", "name": "John1"},
-     {"gender": "f", "last_name": "Doe1", "name": "Jane1"}],
+    [{"gender": "M", "last_name": "Doe", "name": "John"}, {"gender": "F", "last_name": "Doe", "name": "Jane"}],
+    [{"gender": "m", "last_name": "Doe1", "name": "John1"}, {"gender": "f", "last_name": "Doe1", "name": "Jane1"}],
 ]
 
 
@@ -64,33 +62,30 @@ def test_read_xls_value_mapper(xls: str, mapper: "ValueMapper", validator: Calla
         assert all(map(validator, row.values()))
 
 
-@pytest.mark.parametrize("sheet_to_read_args", [
-    {},
-    {"sheet_index_or_name": 0},
-    {"sheet_index_or_name": "f1"}])
+@pytest.mark.parametrize("sheet_to_read_args", [{}, {"index_or_name": 0}, {"index_or_name": "f1"}])
 def test_read_xls_sheet_to_read_args(xls: str, sheet_to_read_args: dict[str, int] | dict[str, str]) -> None:
     assert list(open_xls(xls, **sheet_to_read_args)) == XLS_DATA[0]
 
 
 def test_read_xls_invalid_sheet_index(xls: str) -> None:
-    with pytest.raises(IndexError):
-        list(open_xls(xls, sheet_index_or_name=42))
+    with pytest.raises(SheetNotError):
+        list(open_xls(xls, index_or_name=42))
 
 
 def test_read_xls_invalid_sheet_name(xls: str) -> None:
-    with pytest.raises(ValueError):
-        list(open_xls(xls, sheet_index_or_name="foo"))
+    with pytest.raises(SheetNotError):
+        list(open_xls(xls, index_or_name="foo"))
 
 
 def test_read_xls_invalid_sheet_arg_type(xls: str) -> None:
-    with pytest.raises(ValueError):
-        list(open_xls(xls, sheet_index_or_name=object()))
+    with pytest.raises(SheetNotError):
+        list(open_xls(xls, index_or_name=object()))
 
 
 @pytest.mark.parametrize("start_at", [0, 1])
 def test_read_multi_xls_headers(xls: str, start_at: int) -> None:
     ret = []
-    for e, sh in open_xls_multi(xls, sheet_indices=[0, 1], start_at_row=start_at, have_header=True):
+    for e, sh in open_xls_multi(xls, indices_or_names=[0, 1], start_at_row=start_at, have_header=True):
         ret.extend([(e, row) for row in sh])
     if start_at == 0:
         # Sheet 0 - Row 0
@@ -110,24 +105,23 @@ def test_read_multi_xls_headers(xls: str, start_at: int) -> None:
 
 @pytest.mark.parametrize(("mapper", "validator"), [(str.upper, str.isupper), (str.lower, str.islower)])
 def test_read_multi_xls_value_mapper(xls: str, mapper: "ValueMapper", validator: Callable[[Any], bool]) -> None:
-    for _, sheet in open_xls_multi(xls, sheet_indices=[0, 1], have_header=True, value_mapper=mapper):
+    for _, sheet in open_xls_multi(xls, indices_or_names=[0, 1], have_header=True, value_mapper=mapper):
         for row in sheet:
             assert all(map(validator, row.values()))
 
 
-@pytest.mark.parametrize("sheets_to_read_args", [
-    {},
-    {"sheet_indices": [0]},
-    {"sheet_names": ["f1"]}])
-def test_read_multi_xls_sheet_to_read_args(xls: str, sheets_to_read_args: dict[str, list[int]] | dict[str, list[str]]) -> None:
+@pytest.mark.parametrize("sheets_to_read_args", [{}, {"indices_or_names": [0]}, {"indices_or_names": ["f1"]}])
+def test_read_multi_xls_sheet_to_read_args(
+    xls: str, sheets_to_read_args: dict[str, list[int]] | dict[str, list[str]]
+) -> None:
     assert [list(sheet) for i, sheet in open_xls_multi(xls, **sheets_to_read_args)] == [XLS_DATA[0]]
 
 
 def test_read_multi_xls_invalid_sheet_index(xls: str) -> None:
-    with pytest.raises(IndexError):
-        list(open_xls_multi(xls, sheet_indices=[42]))
+    with pytest.raises(SheetNotError):
+        list(open_xls_multi(xls, indices_or_names=[42]))
 
 
 def test_read_multi_xls_invalid_sheet_name(xls: str) -> None:
-    with pytest.raises(ValueError):
-        list(open_xls_multi(xls, sheet_names=["foo"]))
+    with pytest.raises(SheetNotError):
+        list(open_xls_multi(xls, indices_or_names=["foo"]))
