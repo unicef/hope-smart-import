@@ -20,6 +20,6 @@ Install [uv](https://docs.astral.sh/uv/)
 
     tests/demoapp/manage.py runserver
 
-!!! note 
+!!! note
 
     You can login in the demo application as superuser using any username/password
