@@ -25,14 +25,12 @@ optional-dependencies.docs = [
 
 [tool.uv]
 dev-dependencies = [
-  "black",
   "bump2version",
   "django-webtest",
   "django",
   "factory-boy",
   "ruff",
   "ipython",
-  "isort",
   "mypy",
   "pre-commit",
   "pdbpp",
