@@ -59,16 +59,6 @@ def open_xls(
     yield from _read_worksheet(sh, start_at_row=start_at_row, has_header=has_header, value_mapper=value_mapper)
 
 
-@overload
-def open_xls_multi(filepath: str, sheet_indices: list[int] = ..., *, start_at_row: list[int] | int = ...,
-                   have_header: list[bool] | bool = ..., value_mapper: "ValueMapper" = ...) -> "MultiSheetResult": ...
-
-
-@overload
-def open_xls_multi(filepath: str, *, sheet_names: list[str], start_at_row: list[int] | int = ...,
-                   have_header: list[bool] | bool = ..., value_mapper: "ValueMapper" = ...) -> "MultiSheetResult": ...
-
-
 def open_xls_multi(
     filepath: str,
     sheet_indices: list[int] = (0,),
