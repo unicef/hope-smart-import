@@ -3,11 +3,14 @@ name = "hope-smart-import"
 version = "0.5.1"
 description = ""
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.13"
 classifiers = [
+  "Environment :: Web Environment",
+  "Framework :: Django",
+  "Framework :: Django :: 5.2",
+  "Framework :: Django :: 6.0",
+  "Intended Audience :: Developers",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
@@ -16,27 +19,26 @@ dependencies = [
   "openpyxl",
 ]
 
-optional-dependencies.docs = [
+[dependency-groups]
+dev = [
+  "bump2version",
+  "django-webtest",
+  "factory-boy",
+  "ipython",
+  "mypy",
+  "pdbpp",
+  "pre-commit",
+  "pytest",
+  "pytest-cov",
+  "pytest-django",
+  "pytest-echo",
+  "ruff",
+  "tox",
+]
+
+docs = [
   "mkdocs",
   "mkdocs-awesome-pages-plugin",
   "mkdocs-material",
   "mkdocstrings-python",
-]
-
-[tool.uv]
-dev-dependencies = [
-  "bump2version",
-  "django-webtest",
-  "django",
-  "factory-boy",
-  "ruff",
-  "ipython",
-  "mypy",
-  "pre-commit",
-  "pdbpp",
-  "pytest-cov",
-  "pytest-django",
-  "pytest-echo",
-  "pytest",
-  "tox",
 ]

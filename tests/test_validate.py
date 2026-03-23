@@ -4,10 +4,13 @@ from typing import Any, Iterable
 
 import pytest
 from demo.factories import FieldsetFactory, FlexFieldFactory
-from hope_flex_fields.models import Fieldset
+import typing
 
 from hope_smart_import.readers import open_xls, open_xls_multi
 from hope_smart_import.shortcuts import validate_single, validate_xls_multi
+
+if typing.TYPE_CHECKING:
+    from hope_flex_fields.models import Fieldset
 
 
 @pytest.fixture
@@ -21,14 +24,14 @@ def xls_multi() -> Iterable:
 
 
 @pytest.fixture
-def simple_validator(db: Any) -> Fieldset:
+def simple_validator(db: Any) -> "Fieldset":
     fs = FieldsetFactory(name="Simple Validator")
     FlexFieldFactory(name="name", fieldset=fs)
     FlexFieldFactory(name="last_name", fieldset=fs)
     return fs
 
 
-def test_validate_simple(xls_simple: Iterable, simple_validator: Fieldset):
+def test_validate_simple(xls_simple: Iterable, simple_validator: "Fieldset"):
     g1 = list(xls_simple)
     errors = validate_single(g1, simple_validator, fail_if_alien=False)
     assert not errors
