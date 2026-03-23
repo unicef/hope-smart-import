@@ -1,4 +1,5 @@
-from collections.abc import Callable
+from __future__ import annotations
+
 from pathlib import Path
 from typing import Any, TYPE_CHECKING
 
@@ -7,6 +8,7 @@ import pytest
 from hope_smart_import.readers import open_csv, open_xls, open_xls_multi, SheetNotError
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
     from hope_smart_import.types import ValueMapper
 
 

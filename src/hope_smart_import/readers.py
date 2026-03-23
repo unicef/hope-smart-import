@@ -1,11 +1,13 @@
+from __future__ import annotations
+
 import csv
-from collections.abc import Callable
 from itertools import islice
 from typing import TYPE_CHECKING, Any, Iterable
 
 import openpyxl
 
 if TYPE_CHECKING:
+    from collections.abc import Callable
     from openpyxl.workbook.workbook import Workbook
     from openpyxl.worksheet.worksheet import Worksheet
 
@@ -93,7 +95,12 @@ def open_xls_multi(
         has_header = has_header if isinstance(has_header, bool) else has_header[si]
         yield (
             si,
-            _read_worksheet(sh, start_at_row=start_at_row, has_header=has_header, value_mapper=value_mapper),
+            _read_worksheet(
+                sh,
+                start_at_row=start_at_row,
+                has_header=has_header,
+                value_mapper=value_mapper,
+            ),
         )
 
 

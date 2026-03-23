@@ -1,10 +1,12 @@
-from typing import TYPE_CHECKING, Any
-from collections.abc import Generator
+from __future__ import annotations
 
-from hope_flex_fields.models import DataChecker, Fieldset
-from hope_flex_fields.models.base import ValidatorMixin
+from typing import TYPE_CHECKING, Any
+
 
 if TYPE_CHECKING:
+    from collections.abc import Generator
+    from hope_flex_fields.models import DataChecker, Fieldset
+    from hope_flex_fields.models.base import ValidatorMixin
     from .types import MultiSheetResult, SheetResult
 
 
